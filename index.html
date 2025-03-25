@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Anzan</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Red+Hands&display=swap');
+        body {
+            background-color: #000; /* Black background */
+            color: #0f0; /* Bright green text */
+            font-family: 'Red Hands', cursive; /* KG Red Hands font */
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        #numberDisplay {
+            font-size: 5em;
+            margin: 50px 0;
+        }
+        #inputSection {
+            display: none;
+            margin-top: 20px;
+        }
+        input[type="number"], button {
+            font-size: 1.5em;
+            padding: 10px;
+            margin: 10px;
+        }
+        button {
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0c0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flash Anzan</h1>
+    <div id="numberDisplay">Get Ready...</div>
+    <div id="inputSection">
+        <input id="userInput" type="number" placeholder="Your Answer">
+        <button id="submitButton">Input</button>
+        <button id="retryButton">Retry</button>
+    </div>
+
+    <!-- Audio element for the beep sound -->
+    <audio id="beepSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+    <script>
+        const numberDisplay = document.getElementById('numberDisplay');
+        const inputSection = document.getElementById('inputSection');
+        const userInput = document.getElementById('userInput');
+        const submitButton = document.getElementById('submitButton');
+        const retryButton = document.getElementById('retryButton');
+        const beepSound = document.getElementById('beepSound');
+
+        let numbers = [];
+        let correctAnswer = 0;
+        let currentIndex = 0;
+
+        // Function to start the flash anzan sequence
+        function startFlashAnzan() {
+            numbers = [];
+            correctAnswer = 0;
+            currentIndex = 0;
+            numberDisplay.textContent = "Get Ready...";
+            inputSection.style.display = "none";
+            userInput.value = "";
+
+            setTimeout(() => {
+                // Generate and display 5 random numbers
+                generateNumbers();
+                displayNumbers();
+            }, 1000);
+        }
+
+        // Function to generate 5 random numbers and calculate the sum
+        function generateNumbers() {
+            for (let i = 0; i < 5; i++) {
+                const num = Math.floor(Math.random() * 9) + 1; // Random number from 1 to 9
+                numbers.push(num);
+                correctAnswer += num;
+            }
+        }
+
+        // Function to display numbers one by one with a beep
+        function displayNumbers() {
+            if (currentIndex < numbers.length) {
+                numberDisplay.textContent = numbers[currentIndex];
+                beepSound.play(); // Play the beep sound
+                currentIndex++;
+                setTimeout(displayNumbers, 1250); // Show each number for 1.25 seconds
+            } else {
+                // After all numbers are shown, prompt for the answer
+                numberDisplay.textContent = "What's the sum?";
+                inputSection.style.display = "block";
+            }
+        }
+
+        // Event listener for the "Input" button
+        submitButton.addEventListener('click', () => {
+            const userAnswer = parseInt(userInput.value);
+            if (userAnswer === correctAnswer) {
+                numberDisplay.textContent = "Correct!";
+            } else {
+                numberDisplay.textContent = `Wrong! The correct answer was ${correctAnswer}.`;
+            }
+            inputSection.style.display = "none";
+        });
+
+        // Event listener for the "Retry" button
+        retryButton.addEventListener('click', startFlashAnzan);
+
+        // Start the game on page load
+        startFlashAnzan();
+    </script>
+</body>
+</html>
