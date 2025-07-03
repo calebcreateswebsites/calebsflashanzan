@@ -2,20 +2,39 @@
 <html>
 <head>
   <title>Flash Anzan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       background-color: black;
       color: purple;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Roboto', sans-serif;
       text-align: center;
       padding-top: 100px;
     }
+    #countdown {
+      font-size: 48px;
+      margin-bottom: 40px;
+    }
     #numberDisplay {
-      font-size: 80px;
-      margin-bottom: 30px;
+      font-size: 100px;
+      margin-bottom: 40px;
     }
     #inputArea {
       display: none;
+      font-size: 32px;
+    }
+    input[type="number"] {
+      font-size: 32px;
+      padding: 10px;
+      width: 250px;
+      font-family: 'Roboto', sans-serif;
+    }
+    button {
+      font-size: 28px;
+      margin: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
     }
   </style>
 </head>
@@ -26,6 +45,7 @@
 
   <div id="inputArea">
     <input type="number" id="answerInput" placeholder="Enter the sum" />
+    <br />
     <button onclick="checkAnswer()">Submit</button>
     <button onclick="resetAnzan()">Reset</button>
   </div>
@@ -33,17 +53,27 @@
   <audio id="beepSfx" src="https://www.soundjay.com/button/beep-07.wav"></audio>
 
   <script>
-    const numbers = [12, 7, 5, 9]; // customize this list
-    const interval = 1000; // 1 second between flashes
+    const numberCount = 4; // Change this to flash more or fewer numbers
+    let numbers = [];
+    let sum = 0;
+    const interval = 1000; // Flash interval in milliseconds
     const countdownEl = document.getElementById("countdown");
     const display = document.getElementById("numberDisplay");
     const inputArea = document.getElementById("inputArea");
     const beep = document.getElementById("beepSfx");
 
     let current = 0;
-    let sum = numbers.reduce((a, b) => a + b, 0);
+
+    function generateNumbers() {
+      numbers = [];
+      for (let i = 0; i < numberCount; i++) {
+        numbers.push(Math.floor(Math.random() * 9) + 1);
+      }
+      sum = numbers.reduce((a, b) => a + b, 0);
+    }
 
     function startCountdown() {
+      generateNumbers();
       let count = 3;
       const cd = setInterval(() => {
         countdownEl.textContent = `Starting in ${count}...`;
@@ -72,7 +102,7 @@
 
     function checkAnswer() {
       const input = parseInt(document.getElementById("answerInput").value);
-      alert(input === sum ? "Correct!" : `Incorrect. The correct sum is ${sum}.`);
+      alert(input === sum ? "✅ Correct!" : `❌ Incorrect. The correct sum is ${sum}.`);
     }
 
     function resetAnzan() {
