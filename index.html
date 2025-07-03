@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flash Anzan</title>
+  <style>
+    body {
+      background-color: black;
+      color: purple;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+    #numberDisplay {
+      font-size: 80px;
+      margin-bottom: 30px;
+    }
+    #inputArea {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="countdown">Starting in 3...</div>
+  <div id="numberDisplay"></div>
+
+  <div id="inputArea">
+    <input type="number" id="answerInput" placeholder="Enter the sum" />
+    <button onclick="checkAnswer()">Submit</button>
+    <button onclick="resetAnzan()">Reset</button>
+  </div>
+
+  <audio id="beepSfx" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
+  <script>
+    const numbers = [12, 7, 5, 9]; // customize this list
+    const interval = 1000; // 1 second between flashes
+    const countdownEl = document.getElementById("countdown");
+    const display = document.getElementById("numberDisplay");
+    const inputArea = document.getElementById("inputArea");
+    const beep = document.getElementById("beepSfx");
+
+    let current = 0;
+    let sum = numbers.reduce((a, b) => a + b, 0);
+
+    function startCountdown() {
+      let count = 3;
+      const cd = setInterval(() => {
+        countdownEl.textContent = `Starting in ${count}...`;
+        count--;
+        if (count < 0) {
+          clearInterval(cd);
+          countdownEl.style.display = "none";
+          flashNumbers();
+        }
+      }, 1000);
+    }
+
+    function flashNumbers() {
+      const flasher = setInterval(() => {
+        if (current < numbers.length) {
+          display.textContent = numbers[current];
+          beep.play();
+          current++;
+        } else {
+          clearInterval(flasher);
+          display.textContent = "";
+          inputArea.style.display = "block";
+        }
+      }, interval);
+    }
+
+    function checkAnswer() {
+      const input = parseInt(document.getElementById("answerInput").value);
+      alert(input === sum ? "Correct!" : `Incorrect. The correct sum is ${sum}.`);
+    }
+
+    function resetAnzan() {
+      current = 0;
+      document.getElementById("answerInput").value = "";
+      display.textContent = "";
+      inputArea.style.display = "none";
+      countdownEl.style.display = "block";
+      startCountdown();
+    }
+
+    startCountdown();
+  </script>
+
+</body>
+</html>
